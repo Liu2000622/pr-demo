@@ -1,5 +1,6 @@
-FROM maven:3.9.4-eclipse-temurin-17 AS build
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 RUN mkdir -p /root/.m2 && echo '<settings><mirrors><mirror><id>aliyun</id><mirrorOf>*</mirrorOf><url>https://maven.aliyun.com/repository/public</url></mirror></mirrors></settings>' > /root/.m2/settings.xml
 COPY pom.xml .
 COPY scaffold-app/pom.xml scaffold-app/
