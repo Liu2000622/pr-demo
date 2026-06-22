@@ -5,20 +5,10 @@ spring:
   application:
     name: scaffold-app
   datasource:
-    # Using H2 in-memory database for immediate runnability
-    url: jdbc:h2:mem:scaffold_db
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: 
-    # To use MySQL, uncomment the following and comment out H2:
-    # url: jdbc:mysql://localhost:3306/scaffold_db?useUnicode=true&characterEncoding=utf-8&serverTimezone=UTC
-    # driver-class-name: com.mysql.cj.jdbc.Driver
-    # username: root
-    # password: yourpassword
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
+    url: jdbc:mysql://mysql:3306/scaffold_db?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: password
   jpa:
     hibernate:
       ddl-auto: update

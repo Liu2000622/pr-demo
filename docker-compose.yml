@@ -1,0 +1,11 @@
+version: '3.8'
+services:
+  app:
+    build: .
+    ports:
+      - "${PREVIEW_PORT}:8080"
+
+networks:
+  default:
+    external: true
+    name: autopr-preview
