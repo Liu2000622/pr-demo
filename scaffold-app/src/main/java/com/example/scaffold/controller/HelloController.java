@@ -27,4 +27,9 @@ public class HelloController {
     public List<User> getUsers() {
         return userRepository.findAll();
     }
+
+    @GetMapping(value = "/version", produces = "text/plain")
+    public String version() {
+        return "v1.0";
+    }
 }
