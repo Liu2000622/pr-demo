@@ -23,6 +23,11 @@ public class HelloController {
         return "Hello, Spring Boot Scaffold is running!";
     }
 
+    @GetMapping(value = "/ping", produces = "text/plain")
+    public String ping() {
+        return "pong";
+    }
+
     @GetMapping("/users")
     public List<User> getUsers() {
         return userRepository.findAll();
