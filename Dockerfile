@@ -3,7 +3,6 @@ WORKDIR /app
 RUN mkdir -p /root/.m2 && echo '<settings><mirrors><mirror><id>aliyun</id><mirrorOf>*</mirrorOf><url>https://maven.aliyun.com/repository/public</url></mirror></mirrors></settings>' > /root/.m2/settings.xml
 COPY pom.xml .
 COPY scaffold-app/pom.xml scaffold-app/
-RUN mvn dependency:go-offline -B
 COPY scaffold-app/src scaffold-app/src
 RUN mvn clean package -DskipTests -B
 
