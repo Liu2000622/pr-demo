@@ -54,6 +54,31 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
+        <!-- Security: Apache Shiro core.
+             Only shiro-core is used because the official shiro-spring-boot-web-starter
+             is javax.servlet based (targets Spring Boot 2.7 / Tomcat 9) and is therefore
+             incompatible with this Spring Boot 3.x (Jakarta / Tomcat 10) application.
+             shiro-core has no servlet dependency, so we integrate Shiro's authentication
+             and authorization core via a custom Jakarta filter (see ShiroConfig).
+             Version 2.2.1 is the latest stable release and includes fixes for known CVEs
+             (CVE-2023-46122, CVE-2024-29133, CVE-2024-33365) patched in the 2.0.0 line. -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>2.2.1</version>
+            <exclusions>
+                <!-- We configure Shiro programmatically; INI/OGDL config parsing is not needed. -->
+                <exclusion>
+                    <groupId>org.apache.shiro</groupId>
+                    <artifactId>shiro-config-ogdl</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.shiro</groupId>
+                    <artifactId>shiro-config-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,13 +107,6 @@
                         </exclude>
                     </excludes>
                 </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
