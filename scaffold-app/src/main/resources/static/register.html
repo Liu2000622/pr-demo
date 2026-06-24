@@ -102,6 +102,9 @@
 
         document.getElementById("captchaImg").addEventListener("click", refreshCaptcha);
 
+        // 页面展示时即加载验证码，无需点击
+        refreshCaptcha();
+
         document.getElementById("registerForm").addEventListener("submit", async function (e) {
             e.preventDefault();
             const btn = document.getElementById("submitBtn");
