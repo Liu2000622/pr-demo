@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - Spring Boot Scaffold</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 380px;
+        }
+        .card h1 { font-size: 24px; margin-bottom: 24px; color: #333; text-align: center; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; color: #555; font-size: 14px; }
+        input[type="text"], input[type="password"] {
+            width: 100%; padding: 10px 12px; border: 1px solid #ddd;
+            border-radius: 6px; font-size: 14px; transition: border-color .2s;
+        }
+        input[type="text"]:focus, input[type="password"]:focus { outline: none; border-color: #667eea; }
+        .hint { font-size: 12px; color: #999; margin-top: 4px; }
+        .captcha-row { display: flex; gap: 10px; align-items: center; }
+        .captcha-row input { flex: 1; }
+        .captcha-img {
+            height: 42px; width: 130px; border: 1px solid #ddd; border-radius: 6px;
+            cursor: pointer; background: #f5f8fc; object-fit: cover;
+        }
+        button {
+            width: 100%; padding: 12px; background: #667eea; color: #fff;
+            border: none; border-radius: 6px; font-size: 16px; cursor: pointer;
+            transition: background .2s;
+        }
+        button:hover { background: #5568d3; }
+        button:disabled { background: #aaa; cursor: not-allowed; }
+        .msg { margin-top: 12px; font-size: 14px; min-height: 20px; }
+        .msg.error { color: #e74c3c; }
+        .msg.success { color: #27ae60; }
+        .footer { margin-top: 18px; text-align: center; font-size: 14px; color: #888; }
+        .footer a { color: #667eea; text-decoration: none; }
+        .footer a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>注册</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">用户名</label>
+                <input type="text" id="username" name="username" autocomplete="username" required minlength="3" maxlength="32">
+                <div class="hint">3-32 个字符</div>
+            </div>
+            <div class="form-group">
+                <label for="password">密码</label>
+                <input type="password" id="password" name="password" autocomplete="new-password" required minlength="6" maxlength="64">
+                <div class="hint">6-64 个字符</div>
+            </div>
+            <div class="form-group">
+                <label for="captcha">验证码（点击图片刷新）</label>
+                <div class="captcha-row">
+                    <input type="text" id="captcha" name="captcha" autocomplete="off" required maxlength="6">
+                    <img id="captchaImg" class="captcha-img" alt="验证码" title="点击刷新">
+                </div>
+            </div>
+            <button type="submit" id="submitBtn">注册</button>
+            <div id="msg" class="msg"></div>
+        </form>
+        <div class="footer">
+            已有账号？<a href="/login.html">去登录</a>
+        </div>
+    </div>
+
+    <script>
+        let captchaId = "";
+
+        async function refreshCaptcha() {
+            try {
+                const resp = await fetch("/api/captcha");
+                const data = await resp.json();
+                captchaId = data.captchaId;
+                document.getElementById("captchaImg").src = data.image;
+            } catch (e) {
+                showMsg("验证码加载失败，请重试", "error");
+            }
+        }
+
+        function showMsg(text, type) {
+            const el = document.getElementById("msg");
+            el.textContent = text;
+            el.className = "msg " + (type || "");
+        }
+
+        document.getElementById("captchaImg").addEventListener("click", refreshCaptcha);
+
+        document.getElementById("registerForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            btn.disabled = true;
+            showMsg("注册中...", "");
+            try {
+                const resp = await fetch("/api/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: document.getElementById("username").value.trim(),
+                        password: document.getElementById("password").value,
+                        captchaId: captchaId,
+                        captcha: document.getElementById("captcha").value.trim()
+                    })
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    showMsg("注册成功，正在跳转到登录页...", "success");
+                    setTimeout(() => { window.location.href = "/login.html"; }, 1000);
+                } else {
+                    showMsg(data.message || "注册失败", "error");
+                    refreshCaptcha();
+                }
+            } catch (err) {
+                showMsg("网络错误，请重试", "error");
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        refreshCaptcha();
+    </script>
+</body>
+</html>
