@@ -29,8 +29,9 @@ import java.util.Map;
  * <p>
  * The filter chain explicitly lists every endpoint so that none is missed:
  * <ul>
- *   <li>{@code /api/login}, {@code /api/logout} &mdash; anonymous (login/logout endpoints)</li>
+ *   <li>{@code /api/login}, {@code /api/logout}, {@code /api/register}, {@code /api/captcha} &mdash; anonymous</li>
  *   <li>{@code /api/version}, {@code /api/ping} &mdash; anonymous (health/version checks)</li>
+ *   <li>{@code /login.html}, {@code /register.html}, {@code /index.html}, {@code /} &mdash; anonymous (static pages; pages gate themselves via /api/me)</li>
  *   <li>{@code /error} &mdash; anonymous (Spring error path)</li>
  *   <li>{@code /**} &mdash; authenticated (covers /api/hello, /api/users, /api/me and anything else)</li>
  * </ul>
@@ -95,8 +96,14 @@ public class ShiroConfig {
         Map<String, String> chain = new LinkedHashMap<>();
         chain.put("/api/login", "anon");
         chain.put("/api/logout", "anon");
+        chain.put("/api/register", "anon");
+        chain.put("/api/captcha", "anon");
         chain.put("/api/version", "anon");
         chain.put("/api/ping", "anon");
+        chain.put("/login.html", "anon");
+        chain.put("/register.html", "anon");
+        chain.put("/index.html", "anon");
+        chain.put("/", "anon");
         chain.put("/error", "anon");
         chain.put("/**", "authc");
         return chain;
