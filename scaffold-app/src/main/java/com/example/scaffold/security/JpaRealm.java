@@ -40,7 +40,10 @@ public class JpaRealm extends AuthorizingRealm {
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
         String username = upToken.getUsername();
-        User user = userRepository.findByUsername(username)
+        // Use the list query so a duplicate (legacy) row never raises
+        // NonUniqueResultException at login; the shared MySQL may carry stale dupes.
+        User user = userRepository.findAllByUsername(username).stream()
+                .findFirst()
                 .orElseThrow(() -> new UnknownAccountException("Account not found: " + username));
 
         ByteSource salt = ByteSource.Util.bytes(user.getSalt());
@@ -52,7 +55,7 @@ public class JpaRealm extends AuthorizingRealm {
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         String username = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-        Optional.ofNullable(userRepository.findByUsername(username).orElse(null))
+        Optional.ofNullable(userRepository.findAllByUsername(username).stream().findFirst().orElse(null))
                 .map(User::getRole)
                 .ifPresent(info::addRole);
         return info;

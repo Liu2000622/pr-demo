@@ -13,10 +13,26 @@ public class DataInitializer {
     @Bean
     public CommandLineRunner initData(UserRepository userRepository, PasswordService passwordService) {
         return args -> {
-            // Idempotent: only seed the default admin account if it does not yet exist.
-            if (userRepository.findByUsername("admin").isPresent()) {
+            // Idempotent + self-healing: the shared MySQL persists across runs, so
+            // duplicate "admin" rows can accumulate. Collapse any duplicates down to a
+            // single kept row before deciding whether to seed.
+            java.util.List<User> existing = userRepository.findAllByUsername("admin");
+            if (!existing.isEmpty()) {
+                User keep = existing.get(0);
+                for (User dup : existing.subList(1, existing.size())) {
+                    userRepository.delete(dup);
+                }
+                userRepository.flush();
+                // Re-seed the password/salt so the default admin always works.
+                String salt = passwordService.generateSalt();
+                keep.setSalt(salt);
+                keep.setPassword(passwordService.hashPassword("admin123", salt));
+                keep.setEmail("admin@example.com");
+                keep.setRole("admin");
+                userRepository.save(keep);
                 return;
             }
+
             User user = new User();
             user.setUsername("admin");
             user.setEmail("admin@example.com");
