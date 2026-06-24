@@ -19,4 +19,13 @@ public class User {
     private String username;
 
     private String email;
+
+    /** Hex-encoded SHA-256 hash of the password (salted, 1024 iterations). */
+    private String password;
+
+    /** Per-user salt used when hashing the password. */
+    private String salt;
+
+    /** Role assigned to the user, used by Shiro for authorization. */
+    private String role;
 }
