@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - Spring Boot Scaffold</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --brand: #4C73FF;
+            --brand-dark: #4467E5;
+            --brand-soft: #F1F5FF;
+            --ink: #1E2A4A;
+            --ink-soft: #5A6A85;
+            --label: #8A94A6;
+            --line: #E3E8F2;
+            --line-focus: #4C73FF;
+            --danger: #F05A5A;
+            --success: #2BB673;
+        }
+        html, body { height: 100%; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                         "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #4D72FF 0%, #4467E5 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            color: var(--ink);
+        }
+
+        /* ---------- Card ---------- */
+        .card {
+            width: 100%;
+            max-width: 760px;
+            min-height: 440px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 24px 60px rgba(31, 47, 99, 0.28);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1.05fr 1fr;
+        }
+
+        /* ---------- Left brand / illustration panel ---------- */
+        .panel-brand {
+            position: relative;
+            background: var(--brand-soft);
+            padding: 36px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo .mark {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #4C73FF 0%, #6B8AFF 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 14px rgba(76, 115, 255, 0.4);
+        }
+        .logo .mark svg { width: 20px; height: 20px; }
+        .logo .name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--brand-dark);
+            letter-spacing: .5px;
+        }
+        .illustration {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 12px 0;
+        }
+        .illustration svg { width: 100%; max-width: 280px; height: auto; }
+        .brand-tagline {
+            text-align: center;
+        }
+        .brand-tagline h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .brand-tagline p {
+            font-size: 13px;
+            color: var(--ink-soft);
+            line-height: 1.6;
+        }
+
+        /* ---------- Right form panel ---------- */
+        .panel-form {
+            background: #fff;
+            padding: 40px 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .panel-form h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--ink);
+            margin-bottom: 6px;
+        }
+        .panel-form .subtitle {
+            font-size: 13px;
+            color: var(--label);
+            margin-bottom: 24px;
+        }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: var(--label);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        .input-wrap {
+            position: relative;
+        }
+        .input-wrap .field-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #B6BFCE;
+            display: flex;
+        }
+        .input-wrap .field-icon svg { width: 18px; height: 18px; }
+        input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 11px 12px 11px 38px;
+            border: none;
+            border-bottom: 1.5px solid var(--line);
+            border-radius: 0;
+            font-size: 14px;
+            color: var(--ink);
+            background: transparent;
+            transition: border-color .2s, background .2s;
+        }
+        input::placeholder { color: #C2C9D6; }
+        input[type="text"]:focus, input[type="password"]:focus {
+            outline: none;
+            border-bottom-color: var(--line-focus);
+        }
+        .hint { font-size: 12px; color: var(--label); margin-top: 6px; }
+
+        .captcha-row { display: flex; gap: 12px; align-items: flex-end; }
+        .captcha-row .input-wrap { flex: 1; }
+        .captcha-img {
+            height: 40px;
+            width: 120px;
+            border: 1.5px solid var(--line);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #fff;
+            object-fit: cover;
+            transition: border-color .2s;
+            flex-shrink: 0;
+        }
+        .captcha-img:hover { border-color: var(--brand); }
+
+        .btn {
+            width: 100%;
+            margin-top: 8px;
+            padding: 12px;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(76, 115, 255, 0.35);
+            transition: background .2s, transform .08s, box-shadow .2s;
+        }
+        .btn:hover { background: var(--brand-dark); box-shadow: 0 10px 22px rgba(76, 115, 255, 0.45); }
+        .btn:active { transform: translateY(1px); }
+        .btn:disabled { background: #A9B9EE; cursor: not-allowed; box-shadow: none; }
+
+        .msg { margin-top: 14px; font-size: 13px; min-height: 18px; text-align: center; }
+        .msg.error { color: var(--danger); }
+        .msg.success { color: var(--success); }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: var(--label);
+        }
+        .footer a { color: var(--brand); text-decoration: none; font-weight: 500; }
+        .footer a:hover { text-decoration: underline; }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 680px) {
+            .card { grid-template-columns: 1fr; max-width: 420px; min-height: 0; }
+            .panel-brand { display: none; }
+            .panel-form { padding: 32px 28px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <!-- Left: brand + illustration -->
+        <aside class="panel-brand">
+            <div class="logo">
+                <span class="mark">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M5 12.5L10 17L19 7" stroke="#fff" stroke-width="2.4"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </span>
+                <span class="name">Scaffold</span>
+            </div>
+
+            <div class="illustration" aria-hidden="true">
+                <svg viewBox="0 0 320 240" xmlns="http://www.w3.org/2000/svg">
+                    <ellipse cx="160" cy="210" rx="120" ry="20" fill="#DCE6FF"/>
+                    <!-- desk / document -->
+                    <rect x="96" y="96" width="128" height="96" rx="12" fill="#fff" stroke="#C9D6F7" stroke-width="3"/>
+                    <rect x="96" y="96" width="128" height="22" rx="12" fill="#E8EEFF"/>
+                    <circle cx="110" cy="107" r="3.5" fill="#FF9E9E"/>
+                    <circle cx="122" cy="107" r="3.5" fill="#FFCF8F"/>
+                    <circle cx="134" cy="107" r="3.5" fill="#7BD88F"/>
+                    <rect x="112" y="130" width="80" height="8" rx="4" fill="#C9D6F7"/>
+                    <rect x="112" y="146" width="96" height="8" rx="4" fill="#DCE6FF"/>
+                    <rect x="112" y="162" width="56" height="8" rx="4" fill="#DCE6FF"/>
+                    <!-- person head -->
+                    <circle cx="250" cy="120" r="26" fill="#6B8AFF"/>
+                    <path d="M224 116 Q250 86 276 116 Q276 100 250 92 Q224 100 224 116 Z" fill="#3F5BBF"/>
+                    <!-- pencil / accent -->
+                    <rect x="232" y="150" width="44" height="12" rx="6" fill="#FFCF8F"/>
+                    <rect x="272" y="150" width="14" height="12" rx="3" fill="#FFB14E"/>
+                    <!-- body -->
+                    <rect x="222" y="150" width="60" height="60" rx="18" fill="#4C73FF"/>
+                    <!-- plus badge -->
+                    <circle cx="118" cy="80" r="16" fill="#FFCF8F"/>
+                    <path d="M118 72v16M110 80h16" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+                </svg>
+            </div>
+
+            <div class="brand-tagline">
+                <h2>创建账号</h2>
+                <p>加入 Scaffold，开启你的<br>高效开发之旅</p>
+            </div>
+        </aside>
+
+        <!-- Right: form -->
+        <section class="panel-form">
+            <h1>注册</h1>
+            <p class="subtitle">请填写以下信息完成注册</p>
+            <form id="registerForm" novalidate>
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <div class="input-wrap">
+                        <span class="field-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M4 20c0-4 4-6 8-6s8 2 8 6" stroke="currentColor"
+                                      stroke-width="1.8" stroke-linecap="round"/>
+                            </svg>
+                        </span>
+                        <input type="text" id="username" name="username" autocomplete="username"
+                               placeholder="请输入用户名" required minlength="3" maxlength="32">
+                    </div>
+                    <div class="hint">3-32 个字符</div>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <div class="input-wrap">
+                        <span class="field-icon">
+                            <svg viewBox="0 0 24 24" fill="none">
+                                <rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.8"/>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3" stroke="currentColor" stroke-width="1.8"/>
+                            </svg>
+                        </span>
+                        <input type="password" id="password" name="password" autocomplete="new-password"
+                               placeholder="请输入密码" required minlength="6" maxlength="64">
+                    </div>
+                    <div class="hint">6-64 个字符</div>
+                </div>
+                <div class="form-group">
+                    <label for="captcha">验证码（点击图片刷新）</label>
+                    <div class="captcha-row">
+                        <div class="input-wrap">
+                            <span class="field-icon">
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"
+                                          stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <input type="text" id="captcha" name="captcha" autocomplete="off"
+                                   placeholder="请输入验证码" required maxlength="6">
+                        </div>
+                        <img id="captchaImg" class="captcha-img" alt="验证码" title="点击刷新">
+                    </div>
+                </div>
+                <button type="submit" class="btn" id="submitBtn">注 册</button>
+                <div id="msg" class="msg"></div>
+            </form>
+            <div class="footer">
+                已有账号？<a href="/login.html">去登录</a>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let captchaId = "";
+
+        async function refreshCaptcha() {
+            try {
+                const resp = await fetch("/api/captcha");
+                const data = await resp.json();
+                captchaId = data.captchaId;
+                document.getElementById("captchaImg").src = data.image;
+            } catch (e) {
+                showMsg("验证码加载失败，请重试", "error");
+            }
+        }
+
+        function showMsg(text, type) {
+            const el = document.getElementById("msg");
+            el.textContent = text;
+            el.className = "msg " + (type || "");
+        }
+
+        document.getElementById("captchaImg").addEventListener("click", refreshCaptcha);
+
+        // 页面展示时即加载验证码，无需点击
+        refreshCaptcha();
+
+        document.getElementById("registerForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const btn = document.getElementById("submitBtn");
+            btn.disabled = true;
+            showMsg("注册中...", "");
+            try {
+                const resp = await fetch("/api/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: document.getElementById("username").value.trim(),
+                        password: document.getElementById("password").value,
+                        captchaId: captchaId,
+                        captcha: document.getElementById("captcha").value.trim()
+                    })
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    showMsg("注册成功，正在跳转到登录页...", "success");
+                    setTimeout(() => { window.location.href = "/login.html"; }, 1000);
+                } else {
+                    showMsg(data.message || "注册失败", "error");
+                    refreshCaptcha();
+                }
+            } catch (err) {
+                showMsg("网络错误，请重试", "error");
+            } finally {
+                btn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
