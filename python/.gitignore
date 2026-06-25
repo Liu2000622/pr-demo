@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# SQLite runtime data (default file DB)
+data/
+*.db
+*.sqlite3

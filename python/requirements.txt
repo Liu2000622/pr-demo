@@ -1,0 +1,14 @@
+# Python port of the Spring Boot Scaffold application.
+# Mirrors the Java stack:
+#   spring-boot-starter-web    -> fastapi + uvicorn
+#   spring-boot-starter-data-jpa -> SQLAlchemy
+#   h2 / mysql-connector-j     -> SQLite (built in) / any SQLAlchemy URL
+#   Apache Shiro core          -> custom in-memory session store + auth filter
+#   java.awt / ImageIO         -> Pillow (captcha image rendering)
+#   spring-boot-starter-test   -> pytest + httpx
+fastapi==0.115.6
+uvicorn==0.34.0
+SQLAlchemy==2.0.36
+Pillow==11.0.0
+httpx==0.28.1
+pytest==8.3.4
