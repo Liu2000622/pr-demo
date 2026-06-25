@@ -1,6 +1,8 @@
 services:
   app:
-    build: .
+    build:
+      context: ./python
+      dockerfile: Dockerfile
     ports:
       - "${PREVIEW_PORT}:8080"
 
